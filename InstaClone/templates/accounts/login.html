@@ -1,0 +1,126 @@
+<html>
+{% load socialaccount %}
+<head>
+	<meta charset="UTF-8">
+	<title>Instagram Login</title>
+	<link rel="stylesheet" type="text/css" href="index.css">
+	<script src="https://kit.fontawesome.com/b4590ed823.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="/static/accounts/css/login.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+</head>
+
+<body>
+
+	<!-- CODE HERE-->
+	<div id="login">
+		<img id="logo" src="https://cdn.pixabay.com/photo/2016/08/15/01/29/instagram-1594387_960_720.png" width="175">
+		<form id='login-form' method='post'>
+			{% csrf_token %}
+			<input type="text" name="email" placeholder="Phone number, username, or email">
+			<input type="password" name="password" placeholder="Password"> <br>
+			<button class="blue-btn" type="submit" >Log In</button>
+		</form>
+		<div class="orRow">
+			<div class="line"></div>
+			<div id="or">OR</div>
+			<div class="line"></div>
+		</div>
+		<a href="{% provider_login_url "facebook" %}" id="FBLogin"><span class="bi bi-facebook"></span>Log in with Facebook</a>
+		<div>
+			<p id="loginError"></p>
+		</div>
+		<a href="{% provider_login_url "google" %}" id="FBLogin"><span class="bi bi-google"></span>Log in with Google</a>
+		<div>
+			<p id="loginError"></p>
+		</div>
+		<a href="{% url 'forgotpassword' %}" id="forgotPW">Forgot password?</a>
+	</div>
+	<div id="signup">
+		<p>Don't have an account? <a href="{% url 'register' %}">Sign up</a></p>
+	</div>
+	<div id="getApp">
+		<p>Get the app.</p>
+		<div>
+			<a href="#"><img
+					src="https://www.instagram.com/static/images/appstore-install-badges/badge_ios_english-en.png/180ae7a0bcf7.png"
+					width="135"></a>
+			<a href="#"><img
+					src="https://www.instagram.com/static/images/appstore-install-badges/badge_android_english-en.png/e9cd846dc748.png"
+					width="135"></a>
+		</div>
+	</div>
+
+	<footer>
+		<span class="flinks">
+			<a href="#">ABOUT US</a>
+			<a href="#">SUPPORT</a>
+			<a href="#">PRESS</a>
+			<a href="#">API</a>
+			<a href="#">JOBS</a>
+			<a href="#">PRIVACY</a>
+			<a href="#">TERMS</a>
+			<a href="#">DIRECTORY</a>
+			<a href="#">PROFILES</a>
+			<a href="#">HASHTAGS</a>
+			<a href="#">LANGUAGE</a>
+		</span>
+		<p class="copyright">© 2019 INSTAGRAM FROM FACEBOOK</p>
+	</footer>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<!-- Alertify request start -->
+	{% if messages %}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			{% for message in messages %}
+				{% if message.tags %}
+					{% if message.tags == 'success' %}
+						alertify.success('{{ message|escapejs }}');
+					{% elif message.tags == 'info' %}
+						alertify.message('{{ message|escapejs }}');
+					{% elif message.tags == 'warning' %}
+						alertify.warning('{{ message|escapejs }}');
+					{% elif message.tags == 'error' %}
+						alertify.error('{{ message|escapejs }}');
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+		});
+	</script>
+	{% endif %}
+
+
+	<!-- Ajax Request start  -->
+	<script>
+		$(document).ready(function(){
+			$('#login-form').submit(function(event){
+				event.preventDefault();
+				var formData = $(this).serialize();
+				$.ajax({
+					url:'http://127.0.0.1:8000/',
+					type:'POST',
+					data: formData,
+					success:function(data){
+						if (data.status == 'success'){
+							window.location.href='http://127.0.0.1:8000/home/'
+						}
+						else{
+							window.location.href = 'http://127.0.0.1:8000/'
+						}
+					},
+					error:function(){
+						window.location.href = 'http://127.0.0.1:8000/'
+					}
+				});
+			});
+		});
+	</script>
+	<!-- Ajax Request end  -->
+
+</body>
+
+</html>

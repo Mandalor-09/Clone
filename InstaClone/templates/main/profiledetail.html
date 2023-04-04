@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+
+    <title>Update Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/accounts/css/profiledetail.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
+
+</head>
+
+<body>
+    <div class="container-xl px-4 mt-4">
+
+        <nav class="nav nav-borders">
+            <a href="{% url 'profile' %}" class="nav-link active ms-0">Profile</a>
+        </nav>
+        <hr class="mt-0 mb-4">
+        <div class="row">
+            <div class="col-xl-4">
+
+                <div class="card mb-4 mb-xl-0">
+                    <div class="card-header">Profile Picture</div>
+                    <div class="card-body text-center">
+
+                        <img class="img-account-profile rounded-circle mb-2"
+                            src="{{profile.profilePic.url}}" alt="">
+
+                        <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                        <form method='post' id='updateprofileimage-form' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <label class="custom-file-upload btn btn-primary">
+                              <input name ="pic" type="file" id="file-upload" value ={{profile.profilePic}} hidden>
+                              <span>Upload new Image</span>
+                              <span id="file-name"></span>
+                            </label>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i>
+                            </button>
+                          </form>
+                          {{profile.profilePic}}
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-8">
+
+                <div class="card mb-4">
+                    <div class="card-header">Account Details</div>
+                    <div class="card-body">
+
+                        <form method="post" id="profiledetail-form">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="small mb-1" for="inputUsername">Username (how your name will appear to
+                                    other users on the site)</label>
+                                <input class="form-control" name="username" type="text"
+                                    placeholder="Enter your username" value="{{profile.username}}">
+                            </div>
+
+                            <div class="row gx-3 mb-3">
+
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="inputFirstName">First name</label>
+                                    <input class="form-control" name="firstname" type="text"
+                                        placeholder="Enter your first name" value="{{profile.firstname}}">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="inputLastName">Last name</label>
+                                    <input class="form-control" name="lastname" type="text"
+                                        placeholder="Enter your last name" value="{{profile.lastname}}">
+                                </div>
+                            </div>
+
+                            <div class="row gx-3 mb-3">
+
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="inputOrgName">Organization name</label>
+                                    <input class="form-control" name="orgname" type="text"
+                                        placeholder="Enter your organization name" value="{{profile.organizationName}}">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="inputLocation">Location</label>
+                                    <input class="form-control" name="location" type="text"
+                                        placeholder="Enter your location" value="{{profile.location}}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="small mb-1" for="inputEmailAddress">Email address</label>
+                                <input class="form-control" type="email"
+                                    placeholder="Enter your email address" value="{{profile.email}}" disabled>
+                            </div>
+
+                            <div class="row gx-3 mb-3">
+
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="inputPhone">Phone number</label>
+                                    <input class="form-control" name="phone" type="tel"
+                                        placeholder="Enter your phone number" value="{{profile.phone}}">
+                                </div>
+
+                                {% comment %} <div class="col-md-6">
+                                    <label class="small mb-1" for="inputBirthday">Birthday</label>
+                                    <input class="form-control" name="dob" type="text" name="birthday"
+                                        placeholder="Enter your birthday" value="{{profile.dob}}">
+                                </div> {% endcomment %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="small mb-1" for="inputEmailAddress">Bio(tell us something about you)</label><br>
+                                <textarea name="bio" id="" cols="90" rows="6" value="{{profile.bio}}"></textarea>
+                            </div>
+
+
+                            <button class="btn btn-primary" type="submit">Save changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% comment %} <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script> {% endcomment %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<!-- Alertify request start -->
+	{% if messages %}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			{% for message in messages %}
+				{% if message.tags %}
+					{% if message.tags == 'success' %}
+						alertify.success('{{ message|escapejs }}');
+					{% elif message.tags == 'info' %}
+						alertify.message('{{ message|escapejs }}');
+					{% elif message.tags == 'warning' %}
+						alertify.warning('{{ message|escapejs }}');
+					{% elif message.tags == 'error' %}
+						alertify.error('{{ message|escapejs }}');
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+		});
+	</script>
+	{% endif %}
+
+
+	<!-- Ajax Request start  -->
+	<script>
+		$(document).ready(function(){
+            $('#updateprofileimage-form').submit(function(event){
+                event.preventDefault();
+                var formData = new FormData(this);
+                console.log(formData,'<>')
+                $.ajax({
+                    url:'http://127.0.0.1:8000/picupdate/',
+                    type:'POST', // use POST instead of GET for file uploads
+                    data: formData,
+                    processData: false, // prevent jQuery from automatically processing the data
+                    contentType: false, // let jQuery set the Content-Type header
+                    success:function(data){
+                        if (data.status == 'success'){
+                            window.location.href='http://127.0.0.1:8000/profile/'
+                        }
+                        else{
+                            window.location.href = 'http://127.0.0.1:8000/profiledetail/'
+                        }
+                    },
+                    error:function(){
+                        window.location.href = 'http://127.0.0.1:8000/profiledetail/'
+                    }
+                });
+            });
+        });
+        
+	</script>
+	<!-- Ajax Request end  -->
+
+    <!-- Ajax Request start  -->
+	<script>
+		$(document).ready(function(){
+			$('#profiledetail-form').submit(function(event){
+				event.preventDefault();
+				var formData = $(this).serialize();
+                console.log(formData,'<>')
+
+				$.ajax({
+					url:'http://127.0.0.1:8000/profiledetail/',
+					type:'POST',
+					data: formData,
+					success:function(data){
+						if (data.status == 'success'){
+							window.location.href='http://127.0.0.1:8000/profile/'
+						}
+						else{
+							window.location.href = 'http://127.0.0.1:8000/profiledetail/' 
+						}
+					},
+					error:function(){
+						window.location.href = 'http://127.0.0.1:8000/profiledetail/' 
+					}
+				});
+			});
+		});
+	</script>
+	<!-- Ajax Request end  -->
+
+</body>
+
+</html>

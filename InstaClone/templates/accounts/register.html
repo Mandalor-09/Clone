@@ -1,0 +1,112 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>InstaClone Register</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <script src="https://kit.fontawesome.com/b4590ed823.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="/static/accounts/css/login.css">
+</head>
+
+<body>
+
+    <!-- CODE HERE-->
+    <div id="login">
+        <img id="logo" src="https://cdn.pixabay.com/photo/2016/08/15/01/29/instagram-1594387_960_720.png" width="175">
+        <form id="registration-form" method="post">
+            {% csrf_token %}
+            <input type="text" placeholder="Email" name="email">
+            <input type="password" name="password1" placeholder="Password">
+            <input type="password" name="password2" placeholder="Re-Enter Password"> <br>
+            <button class="blue-btn" type="submit" >Sign Up</button>
+        </form>
+        <div id="signup">
+            <p>Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+        </div>
+        <div id="getApp">
+            <p>Get the app.</p>
+            <div>
+                <a href="#"><img
+                        src="https://www.instagram.com/static/images/appstore-install-badges/badge_ios_english-en.png/180ae7a0bcf7.png"
+                        width="135"></a>
+                <a href="#"><img
+                        src="https://www.instagram.com/static/images/appstore-install-badges/badge_android_english-en.png/e9cd846dc748.png"
+                        width="135"></a>
+            </div>
+        </div>
+
+        <footer>
+            <span class="flinks">
+                <a href="#">ABOUT US</a>
+                <a href="#">SUPPORT</a>
+                <a href="#">PRESS</a>
+                <a href="#">API</a>
+                <a href="#">JOBS</a>
+                <a href="#">PRIVACY</a>
+                <a href="#">TERMS</a>
+                <a href="#">DIRECTORY</a>
+                <a href="#">PROFILES</a>
+                <a href="#">HASHTAGS</a>
+                <a href="#">LANGUAGE</a>
+            </span>
+            <p class="copyright">© 2019 INSTAGRAM FROM FACEBOOK</p>
+        </footer>
+        <!-- Alertify request start -->
+        {% if messages %}
+        <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        <!-- CSS -->
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+        <!-- Default theme -->
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
+
+        <script>
+            $(document).ready(function () {
+                {% for message in messages %}
+                {% if message.tags == 'success' %}
+                alertify.success('{{ message }}');
+                {% elif message.tags == 'info' %}
+                alertify.message('{{ message }}');
+                {% elif message.tags == 'warning' %}
+                alertify.warning('{{ message }}');
+                {% elif message.tags == 'error' %}
+                alertify.error('{{ message }}');
+                {% endif %}
+                {% endfor %}
+            });
+        </script>
+        {% endif %}
+        <!-- Alertify Request end  -->
+
+        <!-- Ajax Request start  -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $('#registration-form').submit(function(event){
+                    event.preventDefault();
+                    var formData = $(this).serialize();
+                    $.ajax({
+                        url:'http://127.0.0.1:8000/register/',
+                        type:'POST',
+                        data:formData,
+                        success:function(data){
+                            if (data.status == 'success') {
+                                window.location.href = 'http://127.0.0.1:8000/'
+                            }
+                            else {
+                                window.location.href = 'http://127.0.0.1:8000/register/'
+                            }
+                        },
+                        error: function () {
+                            window.location.href = 'http://127.0.0.1:8000/register/'
+                        }
+                    })
+                })
+            })
+        </script>
+        <!-- Ajax Request end  -->
+
+
+
+</body>
+
+</html>
